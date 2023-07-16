@@ -5,9 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "types": [
-      "vite/client",
-    ]
+    
   },
   "include": ["vite.config.ts"]
 }
