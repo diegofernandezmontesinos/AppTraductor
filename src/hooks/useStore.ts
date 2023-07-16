@@ -1,5 +1,5 @@
 import { useReducer } from "react"
-import { Language, type Action, type State, AutoLanguage, FromLanguage } from "../types"
+import { type FromLanguage, type Language, type Action, type State } from "../types.d"
 import { AUTO_LANGUAGES } from "../constant"
 
 //iniciamos el estado de la app
