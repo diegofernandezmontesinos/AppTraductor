@@ -1,44 +1,80 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Container, Row, Col, Button } from 'react-bootstrap'
+import { Container, Row, Col, Button, Stack } from 'react-bootstrap'
 import './App.css'
 import { useStore } from './hooks/useStore'
 import { AUTO_LANGUAGES } from './constant'
 import { ArrowsIcon } from './components/Iconos'
 import { LanguageSelector } from './components/LanguageSelector'
+import { TextArea } from './components/TextArea'
+import { useEffect } from 'react'
+import { translate } from './services/translate'
+import { SectionType } from './types'
 
 
 
 function App() {
 
-  const { fromLanguage, toLanguage, interchangeLanguages, setFromLanguage, setToLanguage } = useStore()
+  const { loading, fromLanguage, toLanguage, fromText, result, interchangeLanguages, setFromLanguage, setToLanguage, setFromText, setResult } = useStore()
 
- 
+  useEffect(()=>{
+    if(fromText == '') return 
+
+    translate({fromLanguage, toLanguage, text: fromText})
+    .then((result)=> {
+      if(result == null) return
+      setResult(result)
+    })
+    .catch(()=> {setResult('Error')})
+  }, [fromText])
+
   return (
     <Container fluid>
 
-      <h1>DFM Translate</h1>
+      <h2>DFM Translate</h2>
 
       <Row>
         <Col>
-          <LanguageSelector 
-          type = 'from'
-          value={fromLanguage}
-          onChange={setFromLanguage} /> 
+          <Stack gap={2}>
+            <LanguageSelector 
+            type = {SectionType.From}
+            value={fromLanguage}
+            onChange={setFromLanguage} 
+            /> 
+
+            <TextArea
+            loading={loading}
+            type={SectionType.From}
+            value = {fromText}
+            onChange={setFromText}
+            />
+        </Stack>
+
         </Col>
 
-        <Col>
+        <Col xs='auto'>
           <Button variant="link" disabled={fromLanguage == AUTO_LANGUAGES} onClick={interchangeLanguages}>
             <ArrowsIcon />
           </Button>
         </Col>
 
 
-        <Col>
-        <LanguageSelector 
-        type= 'to'
-        value = {toLanguage}
-        onChange ={setToLanguage}/> 
-        </Col>
+        <Col >
+        <Stack gap={2}>
+            <LanguageSelector 
+            type= {SectionType.To}
+            value = {toLanguage}
+            onChange ={setToLanguage}
+            /> 
+            <TextArea
+            loading={loading}
+            type={SectionType.To}
+            value = {result}
+            onChange={setResult}
+
+            />
+            
+         </Stack>     
+          </Col>
       </Row>
     </Container>
   )
